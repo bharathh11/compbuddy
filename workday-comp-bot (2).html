@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CompBuddy by Bharath — Workday Compensation Expert</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --purple-50: #EEEDFE;
+    --purple-200: #AFA9EC;
+    --purple-400: #7F77DD;
+    --purple-600: #534AB7;
+    --purple-800: #3C3489;
+    --purple-900: #26215C;
+    --teal-50: #E1F5EE;
+    --teal-400: #1D9E75;
+    --teal-600: #0F6E56;
+    --gray-50: #F7F6F3;
+    --gray-100: #EFEDE8;
+    --gray-200: #D3D1C7;
+    --gray-400: #888780;
+    --gray-600: #5F5E5A;
+    --text-primary: #1a1814;
+    --text-secondary: #5F5E5A;
+    --text-muted: #888780;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-50);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 20%, rgba(127,119,221,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 80%, rgba(29,158,117,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 680px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--purple-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .brand-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+
+  .brand-name span {
+    color: var(--purple-600);
+  }
+
+  .by-line {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--teal-600);
+    background: var(--teal-50);
+    padding: 5px 12px;
+    border-radius: 99px;
+    border: 0.5px solid rgba(29,158,117,0.25);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal-400);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .chatbox {
+    background: #fff;
+    border-radius: 20px;
+    border: 0.5px solid var(--gray-200);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 520px;
+  }
+
+  .chat-header {
+    padding: 16px 20px;
+    border-bottom: 0.5px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+  }
+
+  .bot-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--purple-50);
+    border: 1.5px solid var(--purple-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--purple-800);
+    flex-shrink: 0;
+  }
+
+  .bot-info p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .bot-info span {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+  .msg { display: flex; gap: 8px; align-items: flex-end; }
+  .msg.user { flex-direction: row-reverse; }
+
+  .msg-av {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .msg.bot .msg-av { background: var(--purple-50); color: var(--purple-800); border: 0.5px solid var(--purple-200); }
+  .msg.user .msg-av { background: var(--teal-50); color: var(--teal-600); }
+
+  .bubble {
+    max-width: 78%;
+    padding: 11px 15px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-primary);
+  }
+
+  .msg.bot .bubble {
+    background: var(--gray-50);
+    border: 0.5px solid var(--gray-200);
+    border-radius: 4px 16px 16px 16px;
+  }
+
+  .msg.user .bubble {
+    background: var(--purple-600);
+    color: #fff;
+    border-radius: 16px 4px 16px 16px;
+  }
+
+  .chips-wrap {
+    padding: 0 20px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 5px 12px;
+    border-radius: 99px;
+    border: 0.5px solid var(--gray-200);
+    background: #fff;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover {
+    border-color: var(--purple-400);
+    color: var(--purple-800);
+    background: var(--purple-50);
+  }
+
+  .input-area {
+    padding: 14px 20px;
+    border-top: 0.5px solid var(--gray-100);
+    display: flex;
+    gap: 10px;
+    background: #fff;
+  }
+
+  .input-area input {
+    flex: 1;
+    height: 40px;
+    border: 0.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary);
+    background: var(--gray-50);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .input-area input:focus {
+    border-color: var(--purple-400);
+    background: #fff;
+  }
+
+  .input-area input::placeholder { color: var(--text-muted); }
+
+  .send-btn {
+    height: 40px;
+    padding: 0 18px;
+    background: var(--purple-600);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: var(--purple-800); }
+  .send-btn:disabled { background: var(--gray-200); cursor: not-allowed; }
+
+  .typing-dots { display: flex; gap: 4px; align-items: center; padding: 2px 0; }
+  .typing-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gray-400);
+    animation: blink 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0.2;}40%{opacity:1;} }
+
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .footer a {
+    color: var(--purple-600);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .chatbox { height: 480px; }
+    .bubble { max-width: 88%; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="brand">
+    <div class="brand-left">
+      <div class="logo">CB</div>
+      <div>
+        <div class="brand-name">CompBuddy <span>by Bharath</span></div>
+      </div>
+    </div>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      Live
+    </div>
+  </div>
+
+  <div class="chatbox">
+    <div class="chat-header">
+      <div class="bot-avatar">CB</div>
+      <div class="bot-info">
+        <p>CompBuddy by Bharath</p>
+        <span>Comp cycles · Eligibility · Retro changes · Merit · Pay ranges</span>
+      </div>
+    </div>
+
+    <div class="messages" id="msgs">
+      <div class="msg bot">
+        <div class="msg-av">CB</div>
+        <div class="bubble">Hey there! I'm CompBuddy, your friendly Workday Compensation guide — built by Bharath TG. Ask me anything about comp cycles, eligibility rules, retro changes, merit planning, pay ranges, or anything comp-related in Workday!</div>
+      </div>
+    </div>
+
+    <div class="chips-wrap" id="chips">
+      <button class="chip" onclick="askChip('What is a compensation cycle in Workday?')">What is a comp cycle?</button>
+      <button class="chip" onclick="askChip('How do eligibility rules work in Advanced Compensation?')">Eligibility rules</button>
+      <button class="chip" onclick="askChip('What happens when you make a retro comp change in Workday?')">Retro comp changes</button>
+      <button class="chip" onclick="askChip('What is the difference between effective date and entry date in Workday compensation?')">Effective vs entry date</button>
+      <button class="chip" onclick="askChip('How does merit planning work in Workday Advanced Compensation?')">Merit planning</button>
+      <button class="chip" onclick="askChip('What are pay ranges and salary grades in Workday?')">Pay ranges</button>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="qinput" placeholder="Ask a Workday compensation question..." onkeydown="if(event.key==='Enter' && !event.shiftKey) sendQ()" />
+      <button class="send-btn" id="sendbtn" onclick="sendQ()">Ask</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Built by <a href="https://www.linkedin.com/in/bharath-tg" target="_blank">Bharath TG</a> &nbsp;·&nbsp; Senior Workday HRIS Analyst &nbsp;·&nbsp; Compensation Specialist<br/>
+    CompBuddy — focused only on Workday Compensation topics
+  </div>
+
+</div>
+
+<script>
+const msgs = document.getElementById('msgs');
+const input = document.getElementById('qinput');
+const chips = document.getElementById('chips');
+const btn = document.getElementById('sendbtn');
+
+function scrollBottom() {
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addMsg(role, text) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  const av = document.createElement('div');
+  av.className = 'msg-av';
+  av.textContent = role === 'bot' ? 'CB' : 'You';
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.textContent = text;
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  msgs.appendChild(wrap);
+  scrollBottom();
+  return bub;
+}
+
+function showTyping() {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot';
+  wrap.id = 'typing';
+  const av = document.createElement('div');
+  av.className = 'msg-av';
+  av.textContent = 'CB';
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  msgs.appendChild(wrap);
+  scrollBottom();
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+const GEMINI_API_KEY = 'PASTE_YOUR_GEMINI_API_KEY_HERE';
+
+const SYSTEM_PROMPT = `You are CompBuddy, a friendly and knowledgeable Workday Compensation expert bot created by Bharath TG, a Senior Workday HRIS Analyst with 5+ years of experience. You only answer questions related to Workday compensation topics — this includes: compensation cycles, merit planning, bonus plans, pay ranges, salary grades, compensation eligibility rules, advanced compensation configuration, retro comp changes, effective dates vs entry dates, comp history, business process configuration for comp events, compensation reporting, total rewards in Workday, and compensation-related security or workflow issues.
+
+If a question is not related to Workday compensation, politely say: "Hey! I'm CompBuddy — I'm focused only on Workday Compensation topics. Try asking about comp cycles, eligibility rules, retro changes, pay ranges, or merit planning!"
+
+Keep answers clear, practical, and grounded in real Workday experience. Be warm and friendly — like a knowledgeable colleague who's happy to help. Use short paragraphs. Avoid excessive bullet points. Aim for 3-5 sentences unless the topic genuinely needs more depth. Share real-world implications where relevant.`;
+
+async function ask(question) {
+  if (!question.trim()) return;
+  chips.style.display = 'none';
+  addMsg('user', question);
+  btn.disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [{ role: 'user', parts: [{ text: question }] }],
+          generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
+        })
+      }
+    );
+
+    const data = await res.json();
+    removeTyping();
+    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text
+      || "I couldn't get a response right now. Please try again.";
+    addMsg('bot', answer);
+  } catch(e) {
+    removeTyping();
+    addMsg('bot', "Something went wrong connecting to the API. Please try again in a moment.");
+  }
+
+  btn.disabled = false;
+  scrollBottom();
+}
+
+function sendQ() {
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+  ask(q);
+}
+
+function askChip(q) { ask(q); }
+</script>
+</body>
+</html>
